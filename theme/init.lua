@@ -1,9 +1,3 @@
--- Theme handling library
-local beautiful     = require('beautiful')
--- Standard awesome library
-local gears         = require('gears')
-
--- Themes define colors, icons, font and wallpapers.
 local xresources    = require "beautiful.xresources"
 local rnotification = require "ruled.notification"
 local dpi           = xresources.apply_dpi
