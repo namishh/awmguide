@@ -2,7 +2,7 @@ local awful = require("awful")
 local wibox = require("wibox")
 local gears = require("gears")
 local helpers = require("helpers")
-local animation = require("mods.animation")
+local animation = require("module.animation")
 local beautiful = require("beautiful")
 return function(s)
   local taglist = awful.widget.taglist {
@@ -11,54 +11,38 @@ return function(s)
       layout = wibox.layout.fixed.horizontal,
     },
     style           = {
-      shape = helpers.rrect(4)
+      shape = helpers.rrect(9)
     },
     screen          = s,
     filter          = awful.widget.taglist.filter.all,
     buttons         = {
       awful.button({}, 1, function(t) t:view_only() end),
-      awful.button({}, 4, function(t)
-        awful.tag.viewprev(t.screen)
-      end),
-      awful.button({}, 5, function(t)
-        awful.tag.viewnext(t.screen)
-      end)
     },
     widget_template = {
       {
-        {
-          {
-            {
-              markup = '',
-              shape  = helpers.rrect(0),
-              id     = 'text_role',
-              widget = wibox.widget.textbox,
-            },
-            widget = wibox.container.margin,
-            left = 10,
-            right = 10,
-          },
-          valign        = 'center',
-          id            = 'background_role',
-          shape         = helpers.rrect(0),
-          widget        = wibox.container.background,
-          forced_height = 30,
-        },
-        widget = wibox.container.place,
-        valign = "center",
+        valign        = 'center',
+        id            = 'background_role',
+        shape         = helpers.rrect(1),
+        widget        = wibox.container.background,
+        forced_width  = 18,
+        forced_height = 10,
       },
       widget = wibox.container.place,
       create_callback = function(self, tag)
         self.taganim = animation:new({
-          duration = 0.1,
+          duration = 0.15,
           easing = animation.easing.linear,
           update = function(_, pos)
+            self:get_children_by_id('background_role')[1].forced_width = pos
           end,
         })
         self.update = function()
           if tag.selected then
+            self.taganim:set(45)
           elseif #tag:clients() > 0 then
+            self.taganim:set(30)
           else
+            self.taganim:set(15)
           end
         end
 
@@ -69,5 +53,19 @@ return function(s)
       end,
     }
   }
-  return taglist
+  local widget = {
+    {
+      taglist,
+      widget = wibox.container.margin,
+      left = 10,
+      right = 10,
+      top = 3,
+      bottom = 3,
+    },
+    shape = helpers.rrect(10),
+    widget = wibox.container.background,
+    bg = beautiful.altbg,
+  }
+
+  return widget
 end

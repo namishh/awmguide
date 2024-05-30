@@ -1,133 +1,61 @@
-local awful     = require('awful')
-local wibox     = require('wibox')
-local beautiful = require("beautiful")
-local helpers   = require("helpers")
+local awful = require('awful')
+local beautiful = require('beautiful')
+local wibox = require('wibox')
+local helpers = require('helpers')
 
-local module    = require(... .. '.module')
+local module = require(... .. '.module')
 
 return function(s)
-  s.mypromptbox = awful.widget.prompt() -- Create a promptbox.
-
-  -- Create the wibox
   s.mywibox = awful.wibar({
-    position = 'bottom',
-    height   = 60,
-    ontop    = false,
+    position = 'top',
+    height   = 50,
     width    = 1920,
-
     screen   = s,
     widget   = {
+      layout = wibox.layout.align.horizontal,
       {
-        widget = wibox.container.background,
-        bg = beautiful.fg3,
-        forced_width = 1920,
-        forced_height = 1,
+        {
+          {
+            module.launcher,
+            module.taglist(s),
+            module.layout,
+            spacing = 20,
+
+            layout = wibox.layout.fixed.horizontal,
+          },
+          widget = wibox.container.place,
+          valign = "center",
+        },
+        widget = wibox.container.margin,
+        margins = {
+          left = 10,
+          right = 10,
+          top = 3,
+          bottom = 3
+        },
       },
+      nil,
       {
-        -- Left widgets.
         {
           {
-            {
-              layout = wibox.layout.fixed.horizontal,
-              module.launcher(),
-              {
-                {
-
-                  module.taglist(s),
-                  widget = wibox.container.margin,
-                  left = 6,
-                  right = 6,
-                },
-
-                widget = wibox.container.background,
-                bg = beautiful.mbg,
-                shape_border_width = 1,
-                shape_border_color = beautiful.fg3,
-                shape = helpers.rrect(5),
-              },
-              spacing = 8
-            },
-            widget = wibox.container.place,
-            valign = "center",
-            halign = "center",
+            module.systray,
+            module.time,
+            module.progress,
+            module.profile,
+            spacing = 20,
+            layout = wibox.layout.fixed.horizontal,
           },
-          widget = wibox.container.margin,
-          margins = 8,
-          top = 9
+          widget = wibox.container.place,
+          valign = "center",
         },
-        {
-          {
-            widget = wibox.container.background,
-            bg = beautiful.fg3,
-            forced_width = 1,
-          },
-          {
-            module.tasklist(s),
-            widget = wibox.container.margin,
-            top = 9,
-            bottom = 8
-          },
-          spacing = 8,
-          layout = wibox.layout.fixed.horizontal,
+        widget = wibox.container.margin,
+        margins = {
+          left = 10,
+          right = 10,
+          top = 3,
+          bottom = 3
         },
-        -- Right widgets.
-        {
-          {
-            widget = wibox.container.background,
-            bg = beautiful.fg3,
-            forced_width = 1,
-          },
-          {
-            {
-              {
-                module.systray,
-
-                {
-                  {
-                    {
-                      module.battery,
-                      module.wifi,
-                      module.bluetooth,
-                      layout = wibox.layout.fixed.horizontal,
-                      spacing = 10,
-                    },
-                    widget = wibox.container.margin,
-                    top = 3,
-                    bottom = 3,
-                    left = 10,
-                    right = 10
-                  },
-                  widget = wibox.container.background,
-                  bg = beautiful.mbg,
-                  shape_border_width = 1,
-                  buttons = {
-                    awful.button({}, 1, function()
-                      awesome.emit_signal('toggle::settings')
-                    end)
-                  },
-                  shape_border_color = beautiful.fg3,
-                  shape = helpers.rrect(5),
-                },
-                module.time,
-                module.layoutbox(s),
-                layout = wibox.layout.fixed.horizontal,
-                spacing = 8,
-              },
-              widget = wibox.container.place,
-              valign = "center",
-              halign = "center",
-            },
-            widget = wibox.container.margin,
-            left = 8,
-            right = 8,
-            bottom = 8,
-            top = 10
-          },
-          layout = wibox.layout.fixed.horizontal,
-        },
-        layout = wibox.layout.align.horizontal,
       },
-      layout = wibox.layout.fixed.vertical,
     }
   })
 end
